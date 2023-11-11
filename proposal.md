@@ -18,7 +18,7 @@ This is relevant to digital arts, because I'm using many technical art tools to 
     pyautogui, so that the program can respond to mouse movements. 
 
 ## Challenges
-- I need to research all of the different types of py libraries to help me with my execution. 
+- I must research all of the different types of py libraries that can help me with executing my code. 
 - I will need to research on how to make the screensaver respond to mouse movement. 
 - 
 
