@@ -3,14 +3,31 @@ import pygame
 import math
 
 class Particle:
-    def __init__(self, pos=(0, 0), size=5, life=1000, color=pygame.Color(0, 255, 0)):
+    def __init__(self, pos=(0, 0), size=8, life=1000):
         self.pos = pos
         self.size = size
-        self.color = color
+        # Define a function to generate random shades of green or purple
+        def random_color(base_color):
+            variance = 50  # You can adjust this value for more or less variation
+            r = base_color.r + random.randint(-variance, variance)
+            g = base_color.g + random.randint(-variance, variance)
+            b = base_color.b + random.randint(-variance, variance)
+            return pygame.Color(min(255, max(0, r)), min(255, max(0, g)), min(255, max(0, b)))
+
+        # Define base colors for green and purple
+        base_green = pygame.Color(0, 255, 0)  # Green
+        base_purple = pygame.Color(128, 0, 128)  # Purple
+
+        # Choose a random shade of green or purple for each particle
+        base_colors = [base_green, base_purple]
+        base_color = random.choice(base_colors)
+        self.color = random_color(base_color)
+
+        # Remaining initialization code remains unchanged
         self.age = 0
         self.life = life
         self.dead = False
-        self.alpha = 0  # Start with zero alpha
+        self.alpha = 255
         self.surface = self.update_surface()
 
     def update(self, dt):
