@@ -6,24 +6,10 @@ class Particle:
     def __init__(self, pos=(0, 0), size=8, life=1000):
         self.pos = pos
         self.size = size
-        # Define a function to generate random shades of green or purple
-        def random_color(base_color):
-            variance = 50  # You can adjust this value for more or less variation
-            r = base_color.r + random.randint(-variance, variance)
-            g = base_color.g + random.randint(-variance, variance)
-            b = base_color.b + random.randint(-variance, variance)
-            return pygame.Color(min(255, max(0, r)), min(255, max(0, g)), min(255, max(0, b)))
-
-        # Define base colors for green and purple
-        base_green = pygame.Color(0, 255, 0)  # Green
-        base_purple = pygame.Color(128, 0, 128)  # Purple
-
-        # Choose a random shade of green or purple for each particle
-        base_colors = [base_green, base_purple]
-        base_color = random.choice(base_colors)
-        self.color = random_color(base_color)
-
-        # Remaining initialization code remains unchanged
+        # Define a list of colors
+        colors = [pygame.Color("green"), pygame.Color("purple"), pygame.Color("blue")]
+        # Choose a random color from the list
+        self.color = random.choice(colors)
         self.age = 0
         self.life = life
         self.dead = False
@@ -86,6 +72,32 @@ class ParticleTrail():
             particle.draw(surface)
 
 
+class FireworksManager:
+    def __init__(self, screen_size, num_fireworks):
+        self.screen_size = screen_size
+        self.num_fireworks = num_fireworks
+        self.fireworks = self._create_fireworks()
+
+    def _create_fireworks(self):
+        fireworks = []
+        for _ in range(self.num_fireworks):
+            origin = (random.randint(0, self.screen_size[0]), random.randint(0, self.screen_size[1]))
+            num_circles = random.randint(3, 8)
+            particles_per_circle = random.randint(10, 30)
+            max_size = random.randint(30, 80)
+            life = random.randint(800, 1500)
+            fireworks.append(ParticleTrail(origin, num_circles, particles_per_circle, max_size, life))
+        return fireworks
+
+    def update(self, dt):
+        for firework in self.fireworks:
+            firework.update(dt)
+
+    def draw(self, surface):
+        for firework in self.fireworks:
+            firework.draw(surface)
+
+
 def main():
     pygame.init()
     pygame.display.set_caption("Fireworks")
@@ -95,7 +107,7 @@ def main():
 
     clock = pygame.time.Clock()
     dt = 0
-    particle_trail = ParticleTrail((400, 300), num_circles=5, particles_per_circle=20, max_size=50, life=1000)
+    fireworks_manager = FireworksManager(screen.get_size(), num_fireworks=5)
     running = True
     while running:
         for event in pygame.event.get():
@@ -103,8 +115,8 @@ def main():
                 running = False
 
         screen.fill((0, 0, 0))
-        particle_trail.update(dt)
-        particle_trail.draw(screen)
+        fireworks_manager.update(dt)
+        fireworks_manager.draw(screen)
         pygame.display.flip()
 
         dt = clock.tick(30)
