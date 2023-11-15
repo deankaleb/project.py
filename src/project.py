@@ -3,7 +3,7 @@ import pygame
 import math
 
 class Particle():
-    def __init__(self, pos=(0, 0), size=15, life=1000, color=pygame.Color(0, 255, 0)):
+    def __init__(self, pos=(0, 0), size=8, life=1000, color=pygame.Color(0, 255, 0)):
         self.pos = pos
         self.size = size
         self.color = color
@@ -43,10 +43,11 @@ class ParticleTrail():
         self._init_circle()
 
     def _init_circle(self):
+        circle_radius = 100  # Modify this radius for spacing between particles
         for i in range(self.num_particles):
             angle = (2 * math.pi / self.num_particles) * i
-            x = self.origin[0] + self.size * math.cos(angle)
-            y = self.origin[1] + self.size * math.sin(angle)
+            x = self.origin[0] + circle_radius * math.cos(angle)
+            y = self.origin[1] + circle_radius * math.sin(angle)
             pos = (int(x), int(y))
             life = random.uniform(500, 3000)
             particle = Particle(pos, size=self.size, life=life)
@@ -62,7 +63,7 @@ class ParticleTrail():
 
 def main():
     pygame.init()
-    pygame.display.set_caption("Spiral of Circles")
+    pygame.display.set_caption("Fireworks")
 
     min_resolution = (800, 600)
     screen = pygame.display.set_mode(min_resolution)
