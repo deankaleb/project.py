@@ -3,7 +3,7 @@ import pygame
 import math
 
 class Particle:
-    def __init__(self, pos=(0, 0), size=8, life=1000):
+    def __init__(self, pos=(0, 0), size=15, life=1000):
         self.pos = pos
         self.size = size
         # Define a list of colors
@@ -102,26 +102,46 @@ def main():
     pygame.init()
     pygame.display.set_caption("Fireworks")
 
-    min_resolution = (800, 600)
+    min_resolution = (2880, 1960)
     screen = pygame.display.set_mode(min_resolution)
 
     clock = pygame.time.Clock()
     dt = 0
-    fireworks_manager = FireworksManager(screen.get_size(), num_fireworks=5)
     running = True
+    creating_firework = False
+    particle_trails = []
+    last_firework_time = pygame.time.get_ticks()
+    firework_delay = 150  # Time delay between each firework in milliseconds
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
 
         screen.fill((0, 0, 0))
-        fireworks_manager.update(dt)
-        fireworks_manager.draw(screen)
-        pygame.display.flip()
+        mouse_pos = pygame.mouse.get_pos()
+        current_time = pygame.time.get_ticks()
 
+        # Check for mouse movement to create fireworks with a delay
+        if pygame.mouse.get_rel() != (0, 0) and current_time - last_firework_time > firework_delay:
+            origin = mouse_pos
+            num_circles = random.randint(3, 8)
+            particles_per_circle = random.randint(10, 30)
+            max_size = random.randint(50, 100)
+            life = random.randint(800, 1500)
+            particle_trails.append(ParticleTrail(origin, num_circles, particles_per_circle, max_size, life))
+            last_firework_time = current_time  # Update last firework creation time
+
+        for particle_trail in particle_trails:
+            particle_trail.update(dt)
+            particle_trail.draw(screen)
+
+        pygame.display.flip()
         dt = clock.tick(30)
 
     pygame.quit()
-
 if __name__ == "__main__":
     main()
